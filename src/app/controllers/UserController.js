@@ -14,7 +14,7 @@ import * as Yup from 'yup';
 import User from '../models/user.js';
 
 class UserController {
-  async store(req, res) {
+  async store(request, response) {
     const schema = Yup.object({
       name: Yup.string().required(),
       email: Yup.string().email().required(),
@@ -23,13 +23,13 @@ class UserController {
     });
 
     try {
-      schema.validateSync(req.body, { abortEarly: false, strict: true });
+      schema.validateSync(request.body, { abortEarly: false, strict: true });
     } catch (err) {
       console.log(err);
-      return res.status(400).json({ error: err.errors });
+      return response.status(400).json({ error: err.errors });
     }
 
-    const { name, email, password, admin } = req.body;
+    const { name, email, password, admin } = request.body;
 
     const existingUser = await User.findOne({
       where: {
@@ -37,7 +37,7 @@ class UserController {
       },
     });
     if (existingUser) {
-      return res.status(400).json({ message: 'Email already taken' });
+      return response.status(400).json({ message: 'Email already taken' });
     }
 
     const password_hash = await bcrypt.hash(password, 10);
@@ -49,7 +49,7 @@ class UserController {
       password_hash,
       admin,
     });
-    return res.status(201).json(user);
+    return response.status(201).json(user);
   }
 }
 
