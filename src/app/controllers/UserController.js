@@ -10,8 +10,8 @@
 import bcrypt from 'bcrypt';
 import { v4 } from 'uuid';
 import * as Yup from 'yup';
-import User from '../models/user.js';
 
+import User from '../models/user.js';
 
 class UserController {
   async store(req, res) {
