@@ -8,7 +8,7 @@ storage: multer.diskStorage({
 
     destination: resolve(__dirname, '..', '..', 'uploads'),
     filename: (request, file, callback) => {
-        const uniqueName = v4().concat(`-${file.originalName}`)
+        const uniqueName = v4().concat(`-${file.originalname}`)
         return callback(null, uniqueName)
     }
 }),
