@@ -1,6 +1,8 @@
 import * as Yup from 'yup';
 import User from '../models/user.js';
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import authConfig from '../../config/auth.js'
 
 class SessionController {
   async store(request, response) {
@@ -28,27 +30,32 @@ class SessionController {
         email
       }
     });
-     if (!existingUser) {
-    emailOrPasswordIncorrect()
-  }
-  const isPasswordCorrect = await bcrypt.compare(
-    password,
-    existingUser.password_hash
-  )
-  if (!isPasswordCorrect) {
-    emailOrPasswordIncorrect()
+    if (!existingUser) {
+      emailOrPasswordIncorrect()
+    }
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      existingUser.password_hash
+    )
+    if (!isPasswordCorrect) {
+      emailOrPasswordIncorrect()
+    }
+
+    const token = jwt.sign({ id: existingUser.id }, authConfig.secret, {
+      expiresIn: authConfig.expiresIn
+    })
+
+    return response.status(200).json({
+      id: existingUser.id,
+      name: existingUser.name,
+      email: existingUser.email,
+      admin: existingUser.admin,
+      token
+    })
+
   }
 
-  return response.status(200).json({
-    id: existingUser.id,
-    name: existingUser.name,
-    email: existingUser.email,
-    admin: existingUser.admin
-  })
 
-  }
- 
- 
 
 }
 
