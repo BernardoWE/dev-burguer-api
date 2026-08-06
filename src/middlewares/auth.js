@@ -20,7 +20,8 @@ try {
         }
       
         request.userID = decoded.id;
-        request.userIsAdmin = decoded.admin
+        request.userIsAdmin = decoded.admin;
+        request.userName = decoded.name
     })
 } catch (err) {
     return response.status(401).json({error: 'Token is invalid'});
